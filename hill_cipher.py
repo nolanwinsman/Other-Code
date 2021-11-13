@@ -10,14 +10,19 @@ def main():
     print(f'Message "{message}" converts to vectors:')
     code = message_to_vectors(message)
     print_vectors(code, 3)
-    test = np.mod(code[0], 256)
-    test = encrypt(key, code)
+    encrypted_vectors = encrypt(key, code)
     print(f'Encrypted message "{message}" converts to vectors:')
-    print_vectors(test, 3)
+    print_vectors(encrypted_vectors, 3)
     print(f'Encrypted message "{message}" converts to vectors with text:')
-    print_vectors_to_string(test, 3)
-    encrypted_text = vectors_to_string(test, 3)
+    print_vectors_to_string(encrypted_vectors, 3)
+    encrypted_text = vectors_to_string(encrypted_vectors, 3)
     print(f'Encrypted message converts to the text: "{encrypted_text}"')
+    encrypted_vectors = message_to_vectors(encrypted_text) # technically redundant
+    decrypted_vectors = decrypt(key, encrypted_vectors)
+    print(f'Message "{encrypted_text}" decrypts to vectors:')
+    print_vectors(decrypted_vectors, 3)
+
+    print(np.array(np.linalg.inv(key)))
 
 
 
@@ -29,6 +34,18 @@ def encrypt(key, vectors):
         encypted_vectors.append(temp)
     
     return encypted_vectors
+
+def decrypt(key, vectors):
+    key = np.linalg.inv(key)
+    decrypted_vectors = []
+    for v in vectors:
+        temp = np.matmul(key, v)
+        temp = np.mod(temp, 256)
+        decrypted_vectors.append(temp)
+    
+    return decrypted_vectors
+
+
 
 
 
