@@ -8,7 +8,8 @@ import random as rd
 def main():
     f = open('keys.txt', 'w')
     valid_keys = set()
-    while True:
+    x = 0
+    while x < 10000:
         key_string_normal = ''
         for i in range(9):
             key_string_normal += chr(rd.randint(65,90))
@@ -21,6 +22,7 @@ def main():
             print(f'Valid KEY {key_string_normal}')
             valid_keys.update(key_string_normal)
             f.write(key_string_normal+'\n')
+            x += 1
         else:
             print(f'Invalid KEY {key_string_normal}')
 
