@@ -9,6 +9,7 @@ import numpy as np
 
 key_string = 'YNNRJQAKE'
 message = "Nolan Winsman Example Text"
+letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','K','R','S','T','U','V','W','X','Y','Z'] # not used
 
 # lambda function taken from Dhruv Manilawala
 # it rounds all the values to an integer to remove any decimals
@@ -234,6 +235,7 @@ def vectors_to_string(vectors, dimension):
     return s
 
 def main():
+    print('-----HILL CIPHER ALGORITHM-----')
     print(f'key "{key_string}" Converts to matrix:')
     key = key_to_matrix(key_string)
     check_determinant(key)
