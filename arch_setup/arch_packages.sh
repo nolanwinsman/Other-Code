@@ -19,13 +19,20 @@ PKGS_SNAP=(
 'slack'
 'qbittorrent-arnatious'
 'retroarch'
-'gitkraken --classic'
+'gitkraken --classic' # TODO not working
 )
 
 PKGS_PYTHON=(
 'numpy'
 'matplotlib'
 'wikipedia-api'
+'discord.py'
+'install google-api-python-client'
+'imdbpy'
+)
+
+PKGS_VSCODE=(
+'vscodevim.vim'
 )
 
 # installs pacman packages
@@ -48,6 +55,12 @@ for PKG in "${PKGS_PYTHON[@]}"; do
     echo "INSTALLING: ${PKG}"
     pip install "$PKG"
 done
+
+# installs VsCode extensions
+echo 'Installing Python Modules'
+for PKG in "${PKGS_VSCODE[@]}" do
+    echo "INSTALLING: ${PKG}"
+    code --install-extension ${PKG}
 
 # Installs the newest GloriousEggroll Proton file and places it in the Steam compatability directory
 echo 'Installing GloriousEggroll Proton to Steam directory'
