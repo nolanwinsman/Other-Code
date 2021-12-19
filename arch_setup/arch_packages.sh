@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# To install a lot of packages I use
-# Inspired by ArchTitus
-
-
+# Shell script to install a lot of packages I use for Arch Linux
+# Inspired by ArchTitus https://github.com/ChrisTitusTech/ArchTitus
+# Script is to be used after running the ArchTitus script on a fresh Arch Linux Install 
 
 # TODO make script install snap if not present
 # TODO downgrade yay Package
