@@ -49,15 +49,28 @@ def remove_periods(file):
 
 
 def main():
-    if sys.argv[2] == "-y":
-        rename_all = True
-    else:
-        rename_all = False
+    if len(sys.argv) < 2:
+        print("No Directory given in argument")
+        exit()
+    rename_all = False
+    if len(sys.argv) >= 3:
+        if sys.argv[2] == "-y":
+            rename_all = True
     # directory = os.getcwd()
     # print(str(sys.argv[1]))
     directory = str(sys.argv[1])
     for subdir, dirs, files in os.walk(directory):
         for file in files:
+            if file.endswith(".txt") and "RARBG" in str(file):
+                print(f"Deleting file {file}")
+                txt_to_delete = os.path.join(subdir, file)
+                os.remove(txt_to_delete)
+                continue
+            if file.endswith(".exe") and "RARBG" in str(file):
+                print(f"Deleting file {file}")
+                exe_to_delete = os.path.join(subdir, file)
+                os.remove(exe_to_delete)
+                continue
             if file.endswith(".mp4") or file.endswith(".mkv"):
                 # print(file)
                 temp = parenthesis_year(file) 
