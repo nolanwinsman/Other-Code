@@ -2,6 +2,25 @@
 import os
 import sys
 
+def text_after_year_folder(folder):
+    """If the string file has four numbers in a row representing a year,
+       adds parenthesis around the four numbers.
+       Batman 1989xRAREx1080   ---->   Batman
+    """
+    pointer = 0
+    year = 0
+    for c in folder:
+        pointer += 1
+        if c.isdigit():
+            year += 1
+        else:
+            year = 0
+        if year == 4:
+            pointer = pointer - 4
+            return folder[:pointer]
+    return folder
+
+
 def has_year(file):
     """If the file contains four digits inside parenthesis,
        returns True
@@ -70,6 +89,16 @@ def main():
         if sys.argv[2] == "-y":
             rename_all = True
     directory = str(sys.argv[1])
+
+    for subdir, dirs, files in os.walk(directory):
+        if os.path.isdir(subdir):
+            if any((fname.endswith('.mp4') or fname.endswith('.mkv')) for fname in os.listdir(subdir)):
+                temp = remove_periods(subdir) # replaces periods with spaces
+                temp = text_after_year_folder(temp) # deletes all text after the year, including the year
+                print(f"\n{subdir}\n {temp}\n")
+    exit()
+
+
     # loops through all files directories and subdirectories
     for subdir, dirs, files in os.walk(directory):
         for file in files:
@@ -96,6 +125,7 @@ def main():
                     os.rename(old_file, new_file)
                 else:
                     print("Skipping File")
+
 
 
 if __name__ == "__main__":
