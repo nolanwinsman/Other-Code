@@ -112,7 +112,6 @@ def fix_movie_file():
                     os.rename(old_name, new_name)
 
 def fix_movie_folder():
-    # loop for folders
     for subdir, dirs, files in os.walk(DIRECTORY):
         if os.path.isdir(subdir):
             if any((fname.endswith('.mp4') or fname.endswith('.mkv')) for fname in os.listdir(subdir)):
@@ -138,6 +137,19 @@ def subtitles():
                                 print(f"renaming {fname} to {new_name}")
                                 os.rename(os.path.join(subdir, fname), os.path.join(subdir, new_name))
                                 break
+                # subtitle file not inside Subs folder
+                else:
+                    for other_fname in os.listdir(subdir):
+                        if other_fname.endswith(".mp4") or other_fname.endswith(".mkv"):
+                            movie_name = other_fname
+                            new_name = f"{movie_name[:-4]}.en.srt"
+                            print(f"renaming {fname} to {new_name}")
+                            os.rename(os.path.join(subdir, fname), os.path.join(subdir, new_name))
+                            break
+
+
+
+
 
 
 
