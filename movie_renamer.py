@@ -12,6 +12,12 @@ def echo_ne(before, after):
     print(f"\t{before}\n\t{after}")
     print(f"------------------------------------------------------------------------------------------\n")
 
+def remove_space_end(folder):
+    if folder[-1] == " ":
+        return folder[:len(folder)-1] # removes last index
+    else:
+        return folder
+
 def text_after_year_folder(folder):
     """If the string file has four numbers in a row representing a year,
        adds parenthesis around the four numbers.
@@ -27,6 +33,7 @@ def text_after_year_folder(folder):
             year = 0
         if year == 4:
             pointer = pointer - 4
+            print(f"{folder[:pointer]}")
             return folder[:pointer]
     return folder
 
@@ -117,6 +124,7 @@ def fix_movie_folder():
             if any((fname.endswith('.mp4') or fname.endswith('.mkv')) for fname in os.listdir(subdir)):
                 temp = remove_periods(subdir) # replaces periods with spaces
                 temp = text_after_year_folder(temp) # deletes all text after the year, including the year
+                temp = remove_space_end(temp)
                 if temp != subdir:
                     echo_ne(subdir, temp)
                     os.rename(subdir, temp)
