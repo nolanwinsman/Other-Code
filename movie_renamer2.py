@@ -23,7 +23,7 @@ class movie_struct():
         self.new_file_name = ''
         self.new_folder_name = ''
     def print(self):
-        print(f'KEY : {self.key}\nTITLE : {self.title}\nYEAR : {self.year}\nPATH : {self.path}\nABSOLUTE : {self.absolute_path}')
+        print(f'KEY : {self.key}\nTITLE : {self.title}\nYEAR : {self.year}')
         print("---------------")
 
 def movie_details(file, path, r = 0):
@@ -98,7 +98,8 @@ def validate(key):
             title = GLOBAL_MOVIES[key].title
             year = GLOBAL_MOVIES[key].year
             ext = pathlib.Path(GLOBAL_MOVIES[key].absolute_path).suffix
-            new_name = f'{title} ({year}){ext}'
+            GLOBAL_MOVIES[key].new_file_name = f'{title} ({year}){ext}'
+            GLOBAL_MOVIES[key].new_folder_name = title
         else:
             movie_details(file = key, path = GLOBAL_MOVIES[key].path, r = GLOBAL_MOVIES[key].recurse + 1)
             if key in GLOBAL_MOVIES:
@@ -111,9 +112,17 @@ def main():
         exit()
     
     fix_movie_file()
-    copy_keys = GLOBAL_MOVIES.keys()
-    for key in copy_keys:
+    for key in GLOBAL_MOVIES:
         validate(key)
+
+    for to_delete in TO_DELETE:
+        del GLOBAL_MOVIES[to_delete]
+
+    for key in GLOBAL_MOVIES:
+        new_file_name = GLOBAL_MOVIES[key].new_file_name
+        new_folder_name = GLOBAL_MOVIES[key].new_folder_name
+        print(f'RENAMING File: {key} to {new_file_name}')
+        print(f'RENAMING Folder : {key} to {new_folder_name}')
 
 
 
