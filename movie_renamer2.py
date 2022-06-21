@@ -1,3 +1,4 @@
+# TODO make sure duplicate movie years do not display
 import os
 import sys
 from pathlib import Path
@@ -9,6 +10,7 @@ ia = imdb.IMDb() #calls the IMDb function to get an access object through which 
 DIRECTORY = str(sys.argv[1])
 TO_DELETE = set()
 ILLEGAL_CHARS = ['\\','/',':','*','?','"','<','>','|'] #list of illegal chars for Windows
+EXTENSIONS = ['.']
 
 
 # struct for movies
@@ -25,8 +27,8 @@ class movie_struct():
         self.new_file_name = ''
         self.new_folder_name = ''
     def print(self):
-        print(f'KEY : {self.key}\nTITLE : {self.title}\nYEAR : {self.year}')
-        print("---------------")
+        print(f'\nKEY : {self.key}\nTITLE : {self.title}\nYEAR : {self.year}')
+        print("------------------------------")
     def rename(self):
         if len(self.new_file_name) > 0 and len(self.new_folder_name) > 0:
             # renaming file
@@ -63,9 +65,8 @@ def movie_details_kickoff(file, path):
     else:
         id = movies[0].getID()
         movie = ia.get_movie(id)
-        
+        print(movie)
         if movie['kind'] == 'movie':
-            print(movie)
             print(movie['year'])
             GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = 0, movie_db = movies)
         else:
@@ -81,8 +82,8 @@ def movie_details(file, path, r):
         return
     id = movies[r].getID() #stores the ID of the r result of the search (if r == 0 it's the first result and so on)
     movie = ia.get_movie(id) #gets the series
+    print(movie)
     if movie['kind'] == 'movie':
-        print(movie)
         print(movie['year'])
         GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = r, movie_db = movies)
     else:
@@ -116,6 +117,17 @@ def remove_periods(s):
 def capitalize_first_letter(s):
     return s[0].upper() + s[1:]
 
+def contains_multiple(path):
+    count = 0
+    for subdir, dirs, files in os.walk(path):
+        for file in files:
+            for ext in EXTENSIONS:
+                if file.endswith(ext):
+                    count += 1
+                if count > 1:
+                    return True
+    return False
+
 def fix_movie_file():
     # loops through all files directories and subdirectories
     for subdir, dirs, files in os.walk(DIRECTORY):
@@ -131,7 +143,7 @@ def fix_movie_file():
                 os.remove(os.path.join(subdir, file))
                 continue
 
-            if file.endswith(".mp4") or file.endswith(".mkv"):
+            if (file.endswith(".mp4") or file.endswith(".mkv")) and not contains_multiple(subdir):
                 movie_details_kickoff(file = file, path = subdir)
 
 def create_new_names(key):
