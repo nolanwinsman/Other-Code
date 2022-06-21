@@ -10,7 +10,7 @@ ia = imdb.IMDb() #calls the IMDb function to get an access object through which 
 DIRECTORY = str(sys.argv[1])
 TO_DELETE = set()
 ILLEGAL_CHARS = ['\\','/',':','*','?','"','<','>','|'] #list of illegal chars for Windows
-EXTENSIONS = ['.']
+EXTENSIONS = ['.mp4', '.mkv', '.mov']
 
 
 # struct for movies
@@ -142,9 +142,10 @@ def fix_movie_file():
                 print(f"Deleting {file}")
                 os.remove(os.path.join(subdir, file))
                 continue
-
-            if (file.endswith(".mp4") or file.endswith(".mkv")) and not contains_multiple(subdir):
-                movie_details_kickoff(file = file, path = subdir)
+            for ext in EXTENSIONS:
+                print(ext)
+                if file.endswith(ext) and not contains_multiple(subdir):
+                    movie_details_kickoff(file = file, path = subdir)
 
 def create_new_names(key):
     title = GLOBAL_MOVIES[key].title
