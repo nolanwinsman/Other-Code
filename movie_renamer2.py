@@ -8,6 +8,7 @@ GLOBAL_MOVIES = {}
 ia = imdb.IMDb() #calls the IMDb function to get an access object through which IMDB data can be retrieved
 DIRECTORY = str(sys.argv[1])
 TO_DELETE = set()
+ILLEGAL_CHARS = ['\\','/',':','*','?','"','<','>','|'] #list of illegal chars for Windows
 
 
 # struct for movies
@@ -41,6 +42,11 @@ class movie_struct():
             if old_name != new_name:
                 print(f'Renaming {self.key} to {self.new_folder_name}')
                 os.rename(old_name, new_name)
+
+def remove_illegal(s):
+	for c in ILLEGAL_CHARS: #for loop that goes through illegal chars
+		s = s.replace(c,'') #replaces illegal char with empty space
+	return s  
 
 def movie_not_found(file):
     print("Movie not found")
@@ -128,8 +134,8 @@ def create_new_names(key):
     title = GLOBAL_MOVIES[key].title
     year = GLOBAL_MOVIES[key].year
     ext = Path(GLOBAL_MOVIES[key].absolute_path).suffix
-    GLOBAL_MOVIES[key].new_file_name = f'{title} ({year}){ext}'
-    GLOBAL_MOVIES[key].new_folder_name = str(title)
+    GLOBAL_MOVIES[key].new_file_name = remove_illegal(f'{title} ({year}){ext}')
+    GLOBAL_MOVIES[key].new_folder_name = remove_illegal(str(title))
 
 def check_redundancy(key):
     movie = GLOBAL_MOVIES[key]
