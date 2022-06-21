@@ -63,9 +63,10 @@ def movie_details_kickoff(file, path):
     else:
         id = movies[0].getID()
         movie = ia.get_movie(id)
-        for thing in movie:
-            print(thing)
+        
         if movie['kind'] == 'movie':
+            print(movie)
+            print(movie['year'])
             GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = 0, movie_db = movies)
         else:
             GLOBAL_MOVIES[file] = movie_struct("null", "null", "null", "null", "null", failed = True, movie_db = movies)
@@ -80,9 +81,9 @@ def movie_details(file, path, r):
         return
     id = movies[r].getID() #stores the ID of the r result of the search (if r == 0 it's the first result and so on)
     movie = ia.get_movie(id) #gets the series
-    for thing in movie:
-        print(thing)
     if movie['kind'] == 'movie':
+        print(movie)
+        print(movie['year'])
         GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = r, movie_db = movies)
     else:
         movie_details(file = file, path = path, r = (r + 1))
