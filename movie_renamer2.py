@@ -46,7 +46,7 @@ def movie_details(file, path, r = 0):
     temp = text_after_year(file)
     fixed_movie_name = remove_periods(temp)
     movie = ia.search_movie(fixed_movie_name)
-    if r >= 5:
+    if r >= len(movie):
         print("Movie not found")
         TO_DELETE.add(file)
         GLOBAL_MOVIES[file] = movie_struct("WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", failed = True)
