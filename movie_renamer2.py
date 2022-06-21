@@ -57,6 +57,7 @@ def movie_details_kickoff(file, path):
     else:
         id = movies[0].getID()
         movie = ia.get_movie(id)
+        print(movie)
         if movie['kind'] == 'movie':
             GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = 0, movie_db = movies)
         else:
