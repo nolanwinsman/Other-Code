@@ -12,7 +12,7 @@ TO_DELETE = set()
 
 # struct for movies
 class movie_struct():
-    def __init__(self, key, title, year, path, recurse, failed = False):
+    def __init__(self, key, title, year, path, recurse, movie_db, failed = False):
         self.key = key
         self.title = title
         self.year = year
@@ -20,6 +20,7 @@ class movie_struct():
         self.recurse = recurse
         self.absolute_path = os.path.join(path, key)
         self.failed = failed
+        self.movie_db = movie_db # all the results for the database query, to reduce redundancy
         self.new_file_name = ''
         self.new_folder_name = ''
     def print(self):
@@ -41,20 +42,36 @@ class movie_struct():
                 print(f'Renaming {self.key} to {self.new_folder_name}')
                 os.rename(old_name, new_name)
 
+def movie_not_found(file):
+    print("Movie not found")
+    TO_DELETE.add(file)
+    GLOBAL_MOVIES[file] = movie_struct("null", "null", "null", "null", "null", failed = True, movie_db = "null")
 
-def movie_details(file, path, r = 0):
+
+def movie_details_kickoff(file, path):
     temp = text_after_year(file)
     fixed_movie_name = remove_periods(temp)
-    movie = ia.search_movie(fixed_movie_name)
-    if r >= len(movie):
-        print("Movie not found")
-        TO_DELETE.add(file)
-        GLOBAL_MOVIES[file] = movie_struct("WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", "WILL BE DELETED", failed = True)
+    movies = ia.search_movie(fixed_movie_name)
+    if len(movies) <= 0:
+        movie_not_found(file)
+    else:
+        id = movies[0].getID()
+        movie = ia.get_movie(id)
+        GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = 0, movie_db = movies)
+        if movie['kind'] != 'movie':
+            movie_details(file, path, 1)
+
+
+
+def movie_details(file, path, r):
+    movies = GLOBAL_MOVIES[file].movie_db
+    if r >= len(movies):
+        movie_not_found(file)
         return
-    id = movie[r].getID() #stores the ID of the r result of the search (if r == 0 it's the first result and so on)
+    id = movies[r].getID() #stores the ID of the r result of the search (if r == 0 it's the first result and so on)
     movie = ia.get_movie(id) #gets the series
     if movie['kind'] == 'movie':
-        GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = r)
+        GLOBAL_MOVIES[file] = movie_struct(key = file, title = movie, year = movie['year'], path = path, recurse = r, movie_db = movies)
     else:
         movie_details(file = file, path = path, r = (r + 1))
 
@@ -102,7 +119,8 @@ def fix_movie_file():
                 continue
 
             if file.endswith(".mp4") or file.endswith(".mkv"):
-                movie_details(file = file, path = subdir)
+                movie_details_kickoff(file = file, path = subdir)
+
 def create_new_names(key):
     title = GLOBAL_MOVIES[key].title
     year = GLOBAL_MOVIES[key].year
