@@ -143,7 +143,6 @@ def fix_movie_file():
                 os.remove(os.path.join(subdir, file))
                 continue
             for ext in EXTENSIONS:
-                print(ext)
                 if file.endswith(ext) and not contains_multiple(subdir):
                     movie_details_kickoff(file = file, path = subdir)
 
@@ -158,7 +157,7 @@ def check_redundancy(key):
     movie = GLOBAL_MOVIES[key]
     new_name = os.path.join(movie.path, movie.new_file_name)
     old_name = os.path.join(movie.path, movie.key)
-    if new_name == old_name:
+    if new_name.lower() == old_name.lower():
         print('Already Renamed Properly')
         return True
     return False
